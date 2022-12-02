@@ -15,9 +15,16 @@ target_compile_options(abi_compat_common INTERFACE
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-deprecated;-Wno-float-equal>
     $<$<CXX_COMPILER_ID:GNU>:-Wno-deprecated-declarations>
     $<$<CXX_COMPILER_ID:Intel>:-diag-disable=1786>)
-target_include_directories(abi_compat_common SYSTEM INTERFACE
-    ../thirdparty/doctest
-    include)
+if((CMAKE_CXX_COMPILER_ID MATCHES GNU) AND (CMAKE_SYSTEM_NAME MATCHES AIX))
+    target_include_directories(abi_compat_common INTERFACE
+        ../thirdparty/doctest
+        include)
+else()
+    target_include_directories(abi_compat_common SYSTEM INTERFACE
+        ../thirdparty/doctest
+        include)
+endif()
+
 target_link_libraries(abi_compat_common INTERFACE ${NLOHMANN_JSON_TARGET_NAME})
 
 # shared main()
